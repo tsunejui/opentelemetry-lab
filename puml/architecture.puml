@@ -1,0 +1,23 @@
+@startuml architecture
+
+actor "Client" as c
+
+package "Spring Boot Application" {
+    agent "app.jar" as ap
+    agent "opentelemetry-javaagent.jar" as otlpjapp
+}
+
+agent "Grafana" as gf
+agent "Opentelemetry Collector" as oc
+database "Tempo" as tp
+database "Loki" as loki
+
+c -right-> ap : access
+ap -right- otlpjapp
+otlpjapp -right-> oc : grpc
+oc -> tp : traces
+oc --> loki : logs
+tp <- gf : trace view
+loki <- gf : traces to logs
+
+@enduml

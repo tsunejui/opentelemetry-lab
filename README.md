@@ -1,5 +1,7 @@
 # opentelemetry-lab
 
+![architecture](./docs/images/architecture.png)
+
 ## Pre-requisite
 
 You need to build the `Spring Boot project` image first before you use docker-compose to start the service for testing.
@@ -26,9 +28,18 @@ docker build . -t otlp-java-app:v0.0.1
 
 ## Startup OpenTelemetry Lab services
 
-1. run `docker-compose` command
+1. Run `docker-compose` command
 
 ```
-docker-compose up -d
+docker compose up -d
 ```
 
+2. Check that all services are work fine
+
+```
+docker compose ps
+```
+
+![services](./docs/images/services.png)
+
+3. Next, please go to the [configuration page](./docs/grafana.md) of Grafana to create a datasource.

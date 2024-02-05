@@ -12,10 +12,6 @@ services:
       - -Dotel.resource.attributes=service.name=o11y-java-lab
       - -Dotel.exporter.otlp.endpoint=http://collector:4317
       - -Dotel.logs.exporter=otlp
-      # - -Dotel.exporter.otlp.logs.endpoint=http://collector:4317
-      # - -Dotel.logs.exporter=logging-otlp
-      # - -Dotel.javaagent.logging=application
-      # - -Dotel.javaagent.debug=true
       - -jar
       - app.jar
     depends_on:
