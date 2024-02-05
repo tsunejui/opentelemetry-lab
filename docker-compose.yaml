@@ -1,0 +1,58 @@
+version: "3.4"
+services:
+  example-app:
+    image: otlp-java-app:v0.0.1
+    ports:
+      - 8080:8080
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:4317
+    command: 
+      - java
+      - -javaagent:/opentelemetry-javaagent.jar
+      - -Dotel.resource.attributes=service.name=o11y-java-lab
+      - -Dotel.exporter.otlp.endpoint=http://collector:4317
+      - -Dotel.logs.exporter=otlp
+      # - -Dotel.exporter.otlp.logs.endpoint=http://collector:4317
+      # - -Dotel.logs.exporter=logging-otlp
+      # - -Dotel.javaagent.logging=application
+      # - -Dotel.javaagent.debug=true
+      - -jar
+      - app.jar
+    depends_on:
+    - collector
+    - loki
+
+  # https://grafana.com/docs/opentelemetry/collector/troubleshooting/
+  collector:
+    # image: otel/opentelemetry-collector:0.93.0
+    image: otel/opentelemetry-collector-contrib:0.93.0
+    volumes:
+    - ./config/collector.yaml:/etc/otelcol-contrib/config.yaml
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    depends_on:
+    - tempo
+    - loki
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+    - tempo
+    - loki  
+  
+  tempo:
+    image: grafana/tempo
+    command:
+      - --target=all
+      - --storage.trace.backend=local
+      - --storage.trace.local.path=/var/tempo
+      - --auth.enabled=false
+    ports:
+      - 8081:80
+
+  loki:
+    image: grafana/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
