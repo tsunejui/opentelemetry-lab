@@ -1,1 +1,5 @@
 GET http://localhost:8080
+
+###
+
+GET http://localhost:8200/intake/v2/events

@@ -23,7 +23,7 @@ curl http://localhost:8080
 3. Build the java image
 
 ```
-docker build . -t otlp-java-app:v0.0.1
+docker build . -f composes/opentelemetry/Dockerfile -t otlp-java-app:v0.0.1
 ```
 
 ## Startup OpenTelemetry Lab services
