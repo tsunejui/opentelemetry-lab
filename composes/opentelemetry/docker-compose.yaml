@@ -1,7 +1,7 @@
 version: "3.4"
 services:
   example-app:
-    image: otlp-java-app:v0.0.1
+    build: ../../
     ports:
       - 8080:8080
     environment:
@@ -17,13 +17,14 @@ services:
     depends_on:
     - collector
     - loki
-
+    - db
+    - redis
   # https://grafana.com/docs/opentelemetry/collector/troubleshooting/
   collector:
     # image: otel/opentelemetry-collector:0.93.0
     image: otel/opentelemetry-collector-contrib:0.93.0
     volumes:
-    - ./config/collector.yaml:/etc/otelcol-contrib/config.yaml
+    - ../../config/collector.yaml:/etc/otelcol-contrib/config.yaml
     command: ["--config=/etc/otelcol-contrib/config.yaml"]
     depends_on:
     - tempo
@@ -52,3 +53,18 @@ services:
     command: -config.file=/etc/loki/local-config.yaml
     ports:
       - "3100:3100"
+
+  db: 
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: tempo_test
+    ports:
+      - 5432:5432
+
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
